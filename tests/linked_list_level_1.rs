@@ -1,4 +1,4 @@
-use rust_leet::leet::linked_list::LinkedList;
+use rust_leet::leet::linked_list_level_1::LinkedList;
 
 enum ListState { Empty, NonEmpty }
 
