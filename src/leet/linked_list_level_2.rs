@@ -1,4 +1,3 @@
-use std::ops::Drop;
 use std::fmt::{Debug, Formatter, Result};
 
 struct Node<T> {
