@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Formatter, Result};
+use std::{fmt::{Debug, Formatter, Result}};
 
 struct Node<T> {
     value: T,
@@ -7,6 +7,16 @@ struct Node<T> {
 
 pub struct LinkedList<T> {
     head: Option<Box<Node<T>>>,
+}
+
+pub struct ListIter<T>(LinkedList<T>);
+
+impl<T> Iterator for ListIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.pop()
+    }
 }
 
 impl<T> Drop for LinkedList<T> {
@@ -31,8 +41,8 @@ impl<T: Debug> Debug for Node<T> {
 
 impl<T: Debug> Debug for LinkedList<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        f.debug_struct("List {")
-            .field("head", &self.head.as_ref())
+        f.debug_struct("List")
+            .field("head", &self.head)
             .finish()
     }
 }
@@ -45,6 +55,10 @@ impl<T> Default for LinkedList<T> {
 impl<T> LinkedList<T>  {
     pub fn new() -> Self {
         Self { head: None }
+    }
+
+    pub fn into_iter(self) -> ListIter<T> {
+        ListIter(self)
     }
 
     pub fn push(&mut self, value: T) {
