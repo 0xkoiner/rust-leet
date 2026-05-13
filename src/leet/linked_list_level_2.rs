@@ -1,4 +1,5 @@
-use std::fmt::{Debug, Display, Formatter, Result};
+use std::ops::Drop;
+use std::fmt::{Debug, Formatter, Result};
 
 struct Node<T> {
     value: T,
@@ -7,6 +8,17 @@ struct Node<T> {
 
 pub struct LinkedList<T> {
     head: Option<Box<Node<T>>>,
+}
+
+impl<T> Drop for LinkedList<T> {
+    fn drop(&mut self) {
+        let mut current_node: Option<Box<Node<T>>> = self.head.take();
+
+        while let Some(mut node) = current_node {
+            current_node = node.next.take();
+        }
+    }
+    
 }
 
 impl<T: Debug> Debug for Node<T> {
