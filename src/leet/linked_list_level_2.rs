@@ -11,11 +11,29 @@ pub struct LinkedList<T> {
 
 pub struct ListIter<T>(LinkedList<T>);
 
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
 impl<T> Iterator for ListIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.pop()
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T>  {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.next {
+            Some(node) => {
+                self.next = node.next.as_deref();
+                Some(&node.value)
+            },
+            None => None
+        }
     }
 }
 
@@ -60,6 +78,10 @@ impl<T> LinkedList<T>  {
     pub fn into_iter(self) -> ListIter<T> {
         ListIter(self)
     }
+
+    pub fn iter(&self) -> Iter<'_, T> {                 
+        Iter { next: self.head.as_deref() }                                                            
+    } 
 
     pub fn push(&mut self, value: T) {
         let new_node: Box<Node<T>> = Box::new(Node {

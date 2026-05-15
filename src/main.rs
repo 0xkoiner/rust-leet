@@ -1,11 +1,15 @@
-use rust_leet::leet::linked_list_level_2::LinkedList;                                                                  
-                                                                                                                        
-fn main() {                                                                                                            
-    let mut list = LinkedList::new();
+use rust_leet::leet::linked_list_level_2::LinkedList;
+fn main() {
+    let mut list: LinkedList<i32> = LinkedList::new();
 
-    for i in 0..1_000_000 {
-        list.push(i);
+    list.push(1);
+    list.push(2);
+    list.push(3);
+    list.push(4);
+    list.push(5);
+    list.push(6);
+
+    for val in list.iter() {
+        println!("{val}");
     }
-
-
 }

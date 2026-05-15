@@ -68,6 +68,15 @@ mod tests {
         assert_eq!(list.pop(), Some((999_998)));
         assert_eq!(list.pop(), Some((999_997)));
     }
+
+    #[test]
+    fn iter_yields_lifo_refs() {
+        let mut list = LinkedList::new();
+        list.push(1); list.push(2); list.push(3);
+        let v: Vec<&i32> = list.iter().collect();
+        assert_eq!(v, vec![&3, &2, &1]);
+        assert!(!list.is_empty());   // ← list still usable, iter only borrowed
+    }
 }
 
 fn new_list(is_empty: ListState) -> LinkedList<i32>{
