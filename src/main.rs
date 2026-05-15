@@ -9,7 +9,11 @@ fn main() {
     list.push(5);
     list.push(6);
 
-    for val in list.iter() {
-        println!("{val}");
+    println!("{:#?}", list);
+    
+    for val in list.iter_mut() {
+        *val = 3
     }
+
+    println!("{:#?}", list);
 }

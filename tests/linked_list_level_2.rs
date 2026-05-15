@@ -75,8 +75,40 @@ mod tests {
         list.push(1); list.push(2); list.push(3);
         let v: Vec<&i32> = list.iter().collect();
         assert_eq!(v, vec![&3, &2, &1]);
-        assert!(!list.is_empty());   // ← list still usable, iter only borrowed
+        assert!(!list.is_empty());  
     }
+    
+    #[test]                                                                                                                        
+    fn iter_mut_single_element() {
+        let mut list = LinkedList::new();                                                                                            
+        list.push(42);
+        for v in list.iter_mut() {                                                                                                   
+            *v = 99;                                                                                                               
+        }
+        assert_eq!(list.peek(), Some(&99));
+    }                                                                                                                                                                                                                  
+
+    #[test]
+    fn iter_mut_empty_does_nothing() {
+        let mut list: LinkedList<i32> = LinkedList::new();                                                                           
+        for _ in list.iter_mut() {
+            panic!("should not iterate over empty list");                                                                            
+        }                                                                                                                            
+        assert!(list.is_empty());
+    }                                                                                                                                
+
+    #[test]
+    fn iter_mut_does_not_consume() {
+        let mut list = LinkedList::new();                                                                                            
+        list.push(1); list.push(2);
+        for v in list.iter_mut() { *v += 100; }                                                                                      
+
+        list.push(3);                                                                                                                
+        assert_eq!(list.pop(), Some(3));                                                                                           
+        assert_eq!(list.pop(), Some(102));                                                                                           
+        assert_eq!(list.pop(), Some(101));
+        assert_eq!(list.pop(), None);                                                                                                
+    }    
 }
 
 fn new_list(is_empty: ListState) -> LinkedList<i32>{
