@@ -64,6 +64,53 @@ impl<T> DLinkedList<T> {
         self.len += 1;
     }
 
+    pub fn remove_by_value(&mut self, value: T) -> bool
+        where T: PartialEq
+    {
+        let mut current_node: Option<Rc<RefCell<Node<T>>>> = self.head.clone();
+
+        while let Some(node) = current_node {
+            let matches: bool = node.borrow().value == value;
+
+            let next: Option<Rc<RefCell<Node<T>>>> = node.borrow().next.clone();
+            let prev: Option<Rc<RefCell<Node<T>>>> = node
+                                                        .borrow()
+                                                        .prev
+                                                        .as_ref()
+                                                        .and_then(
+                                                            |n| n.upgrade()
+                                                        );
+            
+            if matches {
+                match (prev, next.clone()) {
+                    (None, None) => {
+                        self.head = None;
+                        self.tail = None;
+                    }
+                    (None, Some(next_node)) => {
+                        next_node.borrow_mut().prev = None;
+                        self.head = Some(next_node);
+                    }
+                    (Some(prev_node), None) => {
+                        prev_node.borrow_mut().next = None;
+                        self.tail = Some(prev_node);
+                    }
+                    (Some(prev_node), Some(next_node)) => {
+                        prev_node.borrow_mut().next = Some(Rc::clone(&next_node));
+                        next_node.borrow_mut().prev = Some(Rc::downgrade(&prev_node));
+                    }
+
+
+                }
+                self.len -= 1;
+                return true;
+            }
+
+            current_node = next;
+        }
+        false
+    }
+
     pub fn is_empty(&self) -> bool {
         self.head.is_none() && self.tail.is_none()
     } 
